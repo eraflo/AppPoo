@@ -12,7 +12,7 @@ namespace NS_Service
 		~ServiceCommande();
 		System::Data::DataSet^ Display(int, array<String^>^);
 		System::Data::DataSet^ DisplayAll(array<String^>^);
-		void Add(String^, String^, double, String^, array<NS_Composant::Basket^>^, array<NS_Composant::Payment^>^);
+		void Add(String^, String^, double, String^, int, array<NS_Composant::Basket^>^, array<NS_Composant::Payment^>^);
 		void Edit(int, String^, String^, double, String^, array<NS_Composant::Basket^>^, array<NS_Composant::Payment^>^);
 		void Invoice(int);
 		void Delete(int);

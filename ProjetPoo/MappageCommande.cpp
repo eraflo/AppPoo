@@ -101,9 +101,9 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::UPDA
 
     Payment^ tmp2 = gcnew Payment();
     tmp2 = this->mListPayment;
-    while (tmp1 != nullptr)
+    while (tmp2 != nullptr)
     {
-        tmp1 = tmp1->mNext;
+        tmp2 = tmp2->mNext;
         size++;
     }
 
@@ -128,17 +128,17 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::UPDA
     Basket^ tmp3 = gcnew Basket();
     tmp3 = this->mListArticle;
     int pos = 1;
-    while (tmp2 != nullptr)
+    while (tmp3 != nullptr)
     {
         System::Data::SqlClient::SqlCommand^ com2 = gcnew System::Data::SqlClient::SqlCommand();
         com2->CommandType = System::Data::CommandType::StoredProcedure;
         com2->CommandText = "dbo.SP_Update_Basket";
         com2->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
-        com2->Parameters->Add("@id_stock", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mIdStock;
-        com2->Parameters->Add("@quantity_bought", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mPurchaseQuantity;
-        com2->Parameters->Add("@qte_r", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mReductionQuantity;
+        com2->Parameters->Add("@id_stock", System::Data::SqlDbType::Int)->Value = tmp3->mIdStock;
+        com2->Parameters->Add("@quantity_bought", System::Data::SqlDbType::Int)->Value = tmp3->mPurchaseQuantity;
+        com2->Parameters->Add("@qte_r", System::Data::SqlDbType::Int)->Value = tmp3->mReductionQuantity;
         cmds[pos] = com2;
-        tmp2 = tmp2->mNext;
+        tmp3 = tmp3->mNext;
         pos++;
     }
 
@@ -146,23 +146,22 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::UPDA
     Payment^ tmp4 = gcnew Payment();
     tmp4 = this->mListPayment;
     pos = 1;
-    while (tmp2 != nullptr)
+    while (tmp4 != nullptr)
     {
         System::Data::SqlClient::SqlCommand^ com3 = gcnew System::Data::SqlClient::SqlCommand();
         com3->CommandType = System::Data::CommandType::StoredProcedure;
         com3->CommandText = "dbo.SP_Update_Payment";
-        com3->Parameters->Add("@id_pay", System::Data::SqlDbType::Int)->Value = this->GetPayment()->mIdPay;
-        com3->Parameters->Add("@pay_date", System::Data::SqlDbType::Date)->Value = this->GetPayment()->mDatePayment;
-        com3->Parameters->Add("@balance_date", System::Data::SqlDbType::Date)->Value = this->GetPayment()->mDatePaymentBalance;
-        com3->Parameters->Add("@means", System::Data::SqlDbType::VarChar, 15)->Value = this->GetPayment()->mMeansPayment;
-        com3->Parameters->Add("@amount", System::Data::SqlDbType::Int)->Value = this->GetPayment()->mSommePay;
+        com3->Parameters->Add("@id_pay", System::Data::SqlDbType::Int)->Value = tmp4->mIdPay;
+        com3->Parameters->Add("@pay_date", System::Data::SqlDbType::Date)->Value = tmp4->mDatePayment;
+        com3->Parameters->Add("@balance_date", System::Data::SqlDbType::Date)->Value = tmp4->mDatePaymentBalance;
+        com3->Parameters->Add("@means", System::Data::SqlDbType::VarChar, 15)->Value = tmp4->mMeansPayment;
         System::Data::SqlClient::SqlParameter^ param = gcnew System::Data::SqlClient::SqlParameter("@amount", System::Data::SqlDbType::Decimal);
         param->Precision = 15;
         param->Scale = 2;
-        com3->Parameters->Add(param)->Value = this->GetPayment()->mSommePay;
+        com3->Parameters->Add(param)->Value = tmp4->mSommePay;
         com3->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
         cmds[pos] = com3;
-        tmp2 = tmp2->mNext;
+        tmp4 = tmp4->mNext;
         pos++;
     }
 
@@ -207,7 +206,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::INSE
         com1->CommandText = "dbo.SP_Insert_Order";
         com1->Parameters->Add("@del_date", System::Data::SqlDbType::Date)->Value = this->GetDeliveryDate();
         com1->Parameters->Add("@issue_date", System::Data::SqlDbType::Date)->Value = this->GetEmissionDate();
-        com1->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 43)->Value = this->GetCmdReference();
+        com1->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 11)->Value = this->GetCmdReference();
         param1 = gcnew System::Data::SqlClient::SqlParameter("@discount", System::Data::SqlDbType::Decimal);
         param1->Precision = 15;
         param1->Scale = 2;
@@ -224,49 +223,46 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::INSE
         }
 
 
-        while (tmp1 != nullptr)
+        while (tmp2 != nullptr)
         {
-            tmp1 = tmp1->mNext;
+            tmp2 = tmp2->mNext;
             size++;
         }
 
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(size);
 
         //commande pour update la table include (panier d'article)
-        pos = 1;
-        while (tmp2 != nullptr)
+        pos = 0;
+        while (tmp3 != nullptr)
         {
             com2 = gcnew System::Data::SqlClient::SqlCommand();
             com2->CommandType = System::Data::CommandType::StoredProcedure;
-            com2->CommandText = "dbo.SP_Update_Basket";
+            com2->CommandText = "dbo.SP_Insert_in_Basket";
             com2->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
-            com2->Parameters->Add("@id_stock", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mIdStock;
-            com2->Parameters->Add("@quantity_bought", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mPurchaseQuantity;
-            com2->Parameters->Add("@qte_r", System::Data::SqlDbType::Int)->Value = this->GetBasket()->mReductionQuantity;
+            com2->Parameters->Add("@id_art", System::Data::SqlDbType::Int)->Value = tmp3->mIdStock;
+            com2->Parameters->Add("@qte", System::Data::SqlDbType::Int)->Value = tmp3->mPurchaseQuantity;
+            com2->Parameters->Add("@reduc", System::Data::SqlDbType::Int)->Value = tmp3->mReductionQuantity;
             cmds[pos] = com2;
-            tmp2 = tmp2->mNext;
+            tmp3 = tmp3->mNext;
             pos++;
         }
 
         //commande pour update la table Payments
-        pos = 1;
-        while (tmp2 != nullptr)
+        while (tmp4 != nullptr)
         {
             System::Data::SqlClient::SqlCommand^ com3 = gcnew System::Data::SqlClient::SqlCommand();
             com3->CommandType = System::Data::CommandType::StoredProcedure;
-            com3->CommandText = "dbo.SP_Update_Payment";
-            com3->Parameters->Add("@id_pay", System::Data::SqlDbType::Int)->Value = this->GetPayment()->mIdPay;
-            com3->Parameters->Add("@pay_date", System::Data::SqlDbType::Date)->Value = this->GetPayment()->mDatePayment;
-            com3->Parameters->Add("@balance_date", System::Data::SqlDbType::Date)->Value = this->GetPayment()->mDatePaymentBalance;
-            com3->Parameters->Add("@means", System::Data::SqlDbType::VarChar, 15)->Value = this->GetPayment()->mMeansPayment;
-            com3->Parameters->Add("@amount", System::Data::SqlDbType::Int)->Value = this->GetPayment()->mSommePay;
+            com3->CommandText = "dbo.SP_Insert_Pay";
+            com3->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
+            com3->Parameters->Add("@pay_date", System::Data::SqlDbType::Date)->Value = tmp4->mDatePayment;
+            com3->Parameters->Add("@pay_bal_date", System::Data::SqlDbType::Date)->Value = tmp4->mDatePaymentBalance;
+            com3->Parameters->Add("@means", System::Data::SqlDbType::VarChar, 15)->Value = tmp4->mMeansPayment;
             System::Data::SqlClient::SqlParameter^ param = gcnew System::Data::SqlClient::SqlParameter("@amount", System::Data::SqlDbType::Decimal);
             param->Precision = 15;
             param->Scale = 2;
-            com3->Parameters->Add(param)->Value = this->GetPayment()->mSommePay;
-            com3->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
+            com3->Parameters->Add(param)->Value = tmp4->mSommePay;
             cmds[pos] = com3;
-            tmp2 = tmp2->mNext;
+            tmp4 = tmp4->mNext;
             pos++;
         }
         break;
@@ -278,6 +274,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::INSE
         com4->CommandType = System::Data::CommandType::StoredProcedure;
         com5->CommandType = System::Data::CommandType::StoredProcedure;
 
+        /*
         //commande pour insert dans la table Historique
         com4->CommandText = "dbo.SP_Insert_History";
         com4->Parameters->Add("@id_cmd", System::Data::SqlDbType::Int)->Value = this->GetIdCmd();
@@ -288,7 +285,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCommande::INSE
         com4->Parameters->Add("@comp_ad", System::Data::SqlDbType::VarChar, 50)->Value = "85 avenue Chandele, 76000, Rouen";
         com4->Parameters->Add("@ref_cmd", System::Data::SqlDbType::VarChar, 43)->Value = this->GetCmdReference();
 
-        cmds[0] = com4;
+        cmds[0] = com4;*/
 
         //commande pour insérer la facture
         com5->CommandText = "dbo.SP_Insert_Bill";

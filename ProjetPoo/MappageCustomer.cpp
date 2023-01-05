@@ -62,6 +62,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCustomer::DELE
         com1->CommandType = System::Data::CommandType::StoredProcedure;
         com1->CommandText = "dbo.SP_Select_Ad_People";
         com1->Parameters->Add("@id_p", System::Data::SqlDbType::Int)->Value = this->GetId();
+        cmds[0] = com1;
         break;
     case 1:
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
@@ -77,7 +78,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCustomer::DELE
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
 
         //commande pour supprimer l'adresse du client
-        cmds[1] = this->GetMapAd()->DELETE()[0];
+        cmds[0] = this->GetMapAd()->DELETE()[0];
         break;
     default:
         break;
@@ -149,6 +150,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCustomer::INSE
         com3->Parameters->Add("@id_address", System::Data::SqlDbType::Int)->Value = this->GetMapAd()->GetId();
         com3->Parameters->Add("@id_people", System::Data::SqlDbType::Int)->Value = this->GetId();
         cmds[0] = com3;
+        break;
     case 3:
         //commande pour insérer une adresse de livraison
         com4 = gcnew System::Data::SqlClient::SqlCommand();
@@ -157,6 +159,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageCustomer::INSE
         com4->Parameters->Add("@id_address", System::Data::SqlDbType::Int)->Value = this->GetMapAd()->GetId();
         com4->Parameters->Add("@id_people", System::Data::SqlDbType::Int)->Value = this->GetId();
         cmds[0] = com4;
+        break;
     default:
         break;
     }

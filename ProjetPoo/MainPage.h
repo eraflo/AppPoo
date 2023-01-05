@@ -448,23 +448,31 @@ namespace ProjetPoo {
 		}
 	}
 	private: System::Void butDelMain_Click(System::Object^ sender, System::EventArgs^ e) {
-		//TODO : suppression
 		if (this->gridArt->SelectedRows->Count == 1)
 		{
-
+			this->serviceArt->Delete(Convert::ToInt32(this->gridArt->Rows[this->nbLineSelected]->Cells[0]->Value));
+			MessageBox::Show("Article deleted");
+			this->DeselectLineDataGridView(this->gridArt);
 		}
 		else if (this->gridCmd->SelectedRows->Count == 1)
 		{
-
+			this->serviceCmd->Delete(Convert::ToInt32(this->gridCmd->Rows[this->nbLineSelected]->Cells[0]->Value));
+			MessageBox::Show("Order deleted");
+			this->DeselectLineDataGridView(this->gridCmd);
 		}
 		else if (this->gridStaff->SelectedRows->Count == 1)
 		{
-
+			this->serviceStaff->Delete(Convert::ToInt32(this->gridStaff->Rows[this->nbLineSelected]->Cells[0]->Value));
+			MessageBox::Show("Staff deleted");
+			this->DeselectLineDataGridView(this->gridStaff);
 		}
 		else if (this->gridCust->SelectedRows->Count == 1)
 		{
-
+			this->serviceCust->Delete(Convert::ToInt32(this->gridCust->Rows[this->nbLineSelected]->Cells[0]->Value));
+			MessageBox::Show("Customer deleted");
+			this->DeselectLineDataGridView(this->gridCust);
 		}
+		this->loadData();
 	}
 };
 }

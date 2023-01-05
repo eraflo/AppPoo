@@ -242,7 +242,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->tabControl1->Location = System::Drawing::Point(-5, 0);
 			this->tabControl1->Name = L"tabControl1";
 			this->tabControl1->SelectedIndex = 0;
-			this->tabControl1->Size = System::Drawing::Size(1468, 509);
+			this->tabControl1->Size = System::Drawing::Size(1468, 507);
 			this->tabControl1->TabIndex = 0;
 			// 
 			// homeDispTab
@@ -251,7 +251,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->homeDispTab->Location = System::Drawing::Point(4, 25);
 			this->homeDispTab->Name = L"homeDispTab";
 			this->homeDispTab->Padding = System::Windows::Forms::Padding(3);
-			this->homeDispTab->Size = System::Drawing::Size(1460, 480);
+			this->homeDispTab->Size = System::Drawing::Size(1460, 478);
 			this->homeDispTab->TabIndex = 0;
 			this->homeDispTab->Text = L"Home";
 			this->homeDispTab->UseVisualStyleBackColor = true;
@@ -285,7 +285,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->artDispTab->Location = System::Drawing::Point(4, 25);
 			this->artDispTab->Name = L"artDispTab";
 			this->artDispTab->Padding = System::Windows::Forms::Padding(3);
-			this->artDispTab->Size = System::Drawing::Size(1460, 480);
+			this->artDispTab->Size = System::Drawing::Size(1460, 478);
 			this->artDispTab->TabIndex = 1;
 			this->artDispTab->Text = L"Article";
 			this->artDispTab->UseVisualStyleBackColor = true;
@@ -422,7 +422,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->cmdDispTab->Location = System::Drawing::Point(4, 25);
 			this->cmdDispTab->Name = L"cmdDispTab";
 			this->cmdDispTab->Padding = System::Windows::Forms::Padding(3);
-			this->cmdDispTab->Size = System::Drawing::Size(1460, 480);
+			this->cmdDispTab->Size = System::Drawing::Size(1460, 478);
 			this->cmdDispTab->TabIndex = 2;
 			this->cmdDispTab->Text = L"Commande";
 			this->cmdDispTab->UseVisualStyleBackColor = true;
@@ -555,7 +555,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->custDispTab->Location = System::Drawing::Point(4, 25);
 			this->custDispTab->Name = L"custDispTab";
 			this->custDispTab->Padding = System::Windows::Forms::Padding(3);
-			this->custDispTab->Size = System::Drawing::Size(1460, 480);
+			this->custDispTab->Size = System::Drawing::Size(1460, 478);
 			this->custDispTab->TabIndex = 3;
 			this->custDispTab->Text = L"Customer";
 			this->custDispTab->UseVisualStyleBackColor = true;
@@ -700,7 +700,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			this->staffDispTab->Location = System::Drawing::Point(4, 25);
 			this->staffDispTab->Name = L"staffDispTab";
 			this->staffDispTab->Padding = System::Windows::Forms::Padding(3);
-			this->staffDispTab->Size = System::Drawing::Size(1460, 480);
+			this->staffDispTab->Size = System::Drawing::Size(1460, 478);
 			this->staffDispTab->TabIndex = 4;
 			this->staffDispTab->Text = L"Staff";
 			this->staffDispTab->UseVisualStyleBackColor = true;
@@ -709,11 +709,11 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			// gridSupDisp
 			// 
 			this->gridSupDisp->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->gridSupDisp->Location = System::Drawing::Point(978, 341);
+			this->gridSupDisp->Location = System::Drawing::Point(798, 341);
 			this->gridSupDisp->Name = L"gridSupDisp";
 			this->gridSupDisp->RowHeadersWidth = 51;
 			this->gridSupDisp->RowTemplate->Height = 24;
-			this->gridSupDisp->Size = System::Drawing::Size(456, 95);
+			this->gridSupDisp->Size = System::Drawing::Size(636, 95);
 			this->gridSupDisp->TabIndex = 10;
 			// 
 			// gridAddrStaffDisp
@@ -761,7 +761,7 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 			// supStaffLabDisp
 			// 
 			this->supStaffLabDisp->AutoSize = true;
-			this->supStaffLabDisp->Location = System::Drawing::Point(871, 380);
+			this->supStaffLabDisp->Location = System::Drawing::Point(701, 375);
 			this->supStaffLabDisp->Name = L"supStaffLabDisp";
 			this->supStaffLabDisp->Size = System::Drawing::Size(58, 16);
 			this->supStaffLabDisp->TabIndex = 4;
@@ -948,16 +948,16 @@ private: System::Windows::Forms::Label^ mailLabCustDisp;
 		this->data = this->serviceCust->Display(this->index, tableCust);
 		this->data->Merge(this->serviceCust->DisplayAddr(this->index, tableAddr, tmp_del, tmp_bill));
 
-		if (data->Tables[tmp_del[0]] != nullptr)
-		{
-			this->gridAddrBillDisp->DataSource = this->data;
-			this->gridAddrBillDisp->DataMember = tmp_del[0];
-		}
-		
 		if (data->Tables[tmp_bill[0]] != nullptr)
 		{
+			this->gridAddrBillDisp->DataSource = this->data;
+			this->gridAddrBillDisp->DataMember = tmp_bill[0];
+		}
+		
+		if (data->Tables[tmp_del[0]] != nullptr)
+		{
 			this->gridAddrDelivDisp->DataSource = this->data;
-			this->gridAddrDelivDisp->DataMember = tmp_bill[0];
+			this->gridAddrDelivDisp->DataMember = tmp_del[0];
 		}
 
 		this->fnameBoxCustDisp->Text = this->data->Tables[tableCust[0]]->Rows[0]->ItemArray[1]->ToString();

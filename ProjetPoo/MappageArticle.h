@@ -28,6 +28,7 @@ namespace NS_Composant
 		ColorStock^ mStockColor;
 
 		int choice;
+		String^ col;
 	public:
 		MappageArticle();
 		~MappageArticle();
@@ -35,6 +36,7 @@ namespace NS_Composant
 		virtual array<System::Data::SqlClient::SqlCommand^>^ DELETE() override;
 		virtual array<System::Data::SqlClient::SqlCommand^>^ UPDATE() override;
 		virtual array<System::Data::SqlClient::SqlCommand^>^ INSERT() override;
+		array<System::Data::SqlClient::SqlCommand^>^ CreateColor(String^);
 		void SetIdArt(int);
 		void SetRefArticle(String^);
 		void SetNameArticle(String^);
@@ -44,6 +46,7 @@ namespace NS_Composant
 		void SetIdCategorie(int);
 		void SetStockColor(ColorStock^);
 		void SetChoice(int);
+		void SetCol(String^);
 		int GetIdArt();
 		String^ GetRefArticle();
 		String^ GetNameArticle();
@@ -53,6 +56,7 @@ namespace NS_Composant
 		int GetIdCategorie();
 		ColorStock^ GetStockColor();
 		int GetChoice();
+		String^ GetCol();
 	};
 }
 

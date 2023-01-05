@@ -50,10 +50,8 @@ System::Data::DataSet^ NS_Service::ServiceStaff::DisplayAddr(int _indexAddr, arr
 	return this->GetDataSet();
 }
 
-int* NS_Service::ServiceStaff::Add(String^ fname, String^ lname, String^ email, String^ hdate, int sup, int num, String^ comp, String^ street, int pcode, int city)
+array<int>^ NS_Service::ServiceStaff::Add(String^ fname, String^ lname, String^ email, String^ hdate, int sup, int num, String^ comp, String^ street, int pcode, int city)
 {
-	int* id_p = new int();
-
 	this->mMap->SetChoice(0);
 	this->mMap->SetFirstName(fname);
 	this->mMap->SetLastName(lname);
@@ -67,32 +65,26 @@ int* NS_Service::ServiceStaff::Add(String^ fname, String^ lname, String^ email, 
 	this->mMap->GetMapAd()->SetPostalCode(pcode);
 	this->mMap->GetMapAd()->SetIdCity(city);
 
-	int* id_ad = new int();
-	id_ad = this->GetCom()->ActionRowsId(this->mMap->GetMapAd()->INSERT());
+	array<int>^ id_ad = this->GetCom()->ActionRowsId(this->mMap->GetMapAd()->INSERT());
 
 	this->mMap->SetIdAd(id_ad[0]);
-	id_p = this->GetCom()->ActionRowsId(this->mMap->INSERT());
+	array<int>^ id_p = this->GetCom()->ActionRowsId(this->mMap->INSERT());
 
 	this->mMap->SetChoice(1);
 
 	int i = 0;
-	while (i < sizeof(id_p))
-	{
-		this->mMap->SetId(id_p[i]);
-		this->GetCom()->ActionRows(this->mMap->INSERT());
-		i++;
-	}
+	this->mMap->SetId(id_p[i]);
+	this->GetCom()->ActionRows(this->mMap->INSERT());
+		
 	return id_p;
 }
 
-int* NS_Service::ServiceStaff::AddUser(String^ pwd, int id)
+array<int>^ NS_Service::ServiceStaff::AddUser(String^ pwd, int id)
 {
-	int* id_p = new int();
-
 	this->mMap->GetMapUser()->SetPwd(pwd);
 	this->mMap->GetMapUser()->SetIdP(id);
 
-	id_p = this->GetCom()->ActionRowsId(this->mMap->GetMapUser()->INSERT());
+	array<int>^ id_p = this->GetCom()->ActionRowsId(this->mMap->GetMapUser()->INSERT());
 
 	return id_p;
 }
@@ -122,36 +114,30 @@ void NS_Service::ServiceStaff::EditAd(int id, int num, String^ comp, String^ str
 
 void NS_Service::ServiceStaff::Delete(int _id)
 {
-	int* id = new int();
 	int i = 0;
 	this->mMap->SetChoice(0);
 	this->mMap->SetId(_id);
-	id = this->GetCom()->ActionRowsId(this->mMap->DELETE());
+	array<int>^ id = this->GetCom()->ActionRowsId(this->mMap->DELETE());
 
 	this->mMap->SetChoice(3);
 
-	while (i < sizeof(id))
-	{
-		this->mMap->GetMapAd()->SetId(id[i]);
-		this->GetCom()->ActionRows(this->mMap->DELETE());
-		i++;
-	}
+	this->mMap->GetMapAd()->SetId(id[0]);
+	this->GetCom()->ActionRows(this->mMap->DELETE());
+		
 
 	i = 0;
-	id = new int();
 
 	this->mMap->SetChoice(1);
 	this->mMap->SetId(_id);
-	id = this->GetCom()->ActionRowsId(this->mMap->DELETE());
+	array<int>^ id2 = this->GetCom()->ActionRowsId(this->mMap->DELETE());
 
 	this->mMap->SetChoice(4);
-
-	while (i < sizeof(id))
+	if (id2->Length != 0)
 	{
-		this->mMap->GetMapUser()->SetIdUser(id[i]);
+		this->mMap->GetMapUser()->SetIdUser(id2[0]);
 		this->GetCom()->ActionRows(this->mMap->DELETE());
-		i++;
 	}
+	
 	this->mMap->SetChoice(2);
 	this->mMap->SetId(_id);
 	id = this->GetCom()->ActionRowsId(this->mMap->DELETE());

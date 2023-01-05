@@ -14,7 +14,8 @@ namespace NS_Service
 		System::Data::DataSet^ DisplayAll(array<String^>^);
 		System::Data::DataSet^ GetIdCol(String^, array<String^>^);
 		System::Data::DataSet^ GetAllCat(array<String^>^);
-		int* Add(String^, String^, String^, double, double, int, array<ColorStock^>^);
+		array<int>^ Add(String^, String^, String^, double, double, int, array<ColorStock^>^);
+		array<int>^ AddColor(String^);
 		void Edit(int, String^, String^, String^, double, double, int, array<ColorStock^>^);
 		void Delete(int);
 		NS_Composant::ColorStock^ remplirPanier(array<ColorStock^>^);

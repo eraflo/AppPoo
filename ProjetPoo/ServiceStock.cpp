@@ -36,6 +36,7 @@ System::Data::DataSet^ NS_Service::ServiceStock::GetIdCol(String^ name, array<St
 {
 	this->GetDataSet()->Clear();
 	this->mMap->SetChoice(2);
+	this->mMap->SetCol(name);
 	this->SetDataSet(this->GetCom()->GetRows(this->mMap->SELECT(), dataTableName));
 	this->mMap->SetChoice(0);
 	return this->GetDataSet();
@@ -50,10 +51,8 @@ System::Data::DataSet^ NS_Service::ServiceStock::GetAllCat(array<String^>^ dataT
 	return this->GetDataSet();
 }
 
-int* NS_Service::ServiceStock::Add(String^ ref, String^ name, String^ design, double price, double vat, int cat, array<ColorStock^>^ stocks)
+array<int>^ NS_Service::ServiceStock::Add(String^ ref, String^ name, String^ design, double price, double vat, int cat, array<ColorStock^>^ stocks)
 {
-	int* id;
-
 	this->mMap->SetRefArticle(ref);
 	this->mMap->SetNameArticle(name);
 	this->mMap->SetDesignation(design);
@@ -64,7 +63,17 @@ int* NS_Service::ServiceStock::Add(String^ ref, String^ name, String^ design, do
 	ColorStock^ stock = this->remplirPanier(stocks);
 
 	this->mMap->SetStockColor(stock);
-	id = this->GetCom()->ActionRowsId(this->mMap->INSERT());
+	this->mMap->SetChoice(0);
+	array<int>^ id = this->GetCom()->ActionRowsId(this->mMap->INSERT());
+	this->mMap->SetChoice(1);
+	this->mMap->SetIdArt(id[0]);
+	this->GetCom()->ActionRows(this->mMap->INSERT());
+	return id;
+}
+
+array<int>^ NS_Service::ServiceStock::AddColor(String^ name)
+{
+	array<int>^ id = this->GetCom()->ActionRowsId(this->mMap->CreateColor(name));
 	return id;
 }
 

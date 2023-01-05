@@ -20,6 +20,7 @@ namespace NS_Composant
 		virtual array<System::Data::SqlClient::SqlCommand^>^ DELETE();
 		virtual array<System::Data::SqlClient::SqlCommand^>^ UPDATE();
 		virtual array<System::Data::SqlClient::SqlCommand^>^ INSERT();
+		array<System::Data::SqlClient::SqlCommand^>^ GetCity();
 		void SetId(int);
 		void SetNum(int);
 		void SetComp(String^);

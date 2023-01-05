@@ -58,7 +58,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageArticle::SELEC
         com1 = gcnew System::Data::SqlClient::SqlCommand();
         com1->CommandType = System::Data::CommandType::StoredProcedure;
         com1->CommandText = "dbo.SP_Select_IdCol";
-        com1->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 15)->Value = this->GetStockColor()->colName;
+        com1->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 15)->Value = this->GetCol();
         cmds[0] = com1;
         break;
     case 3:
@@ -133,16 +133,16 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageArticle::UPDAT
         System::Data::SqlClient::SqlCommand^ com = gcnew System::Data::SqlClient::SqlCommand();
         com->CommandType = System::Data::CommandType::StoredProcedure;
         com->CommandText = "dbo.SP_Update_Stock";
-        com->Parameters->Add("@id_stock", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mIdStock;
-        com->Parameters->Add("@threshold", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mReplenishmentThreshold;
+        com->Parameters->Add("@id_stock", System::Data::SqlDbType::Int)->Value = tmp2->mIdStock;
+        com->Parameters->Add("@threshold", System::Data::SqlDbType::Int)->Value = tmp2->mReplenishmentThreshold;
         System::Data::SqlClient::SqlParameter^ param = gcnew System::Data::SqlClient::SqlParameter("@cost", System::Data::SqlDbType::Decimal);
         param->Precision = 15;
         param->Scale = 2;
-        com->Parameters->Add(param)->Value = this->GetStockColor()->mProdCost;
-        com->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 50)->Value = this->GetStockColor()->mReferenceProductColor;
-        com->Parameters->Add("@qte", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mQuantityStock;
-        com->Parameters->Add("@id_col", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mIdColor;
-        com->Parameters->Add("@id_art", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mIdArt;
+        com->Parameters->Add(param)->Value = tmp2->mProdCost;
+        com->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 50)->Value = tmp2->mReferenceProductColor;
+        com->Parameters->Add("@qte", System::Data::SqlDbType::Int)->Value = tmp2->mQuantityStock;
+        com->Parameters->Add("@id_col", System::Data::SqlDbType::Int)->Value = tmp2->mIdColor;
+        com->Parameters->Add("@id_art", System::Data::SqlDbType::Int)->Value = this->GetIdArt();
         cmds[pos] = com;
         tmp2 = tmp2->mNext;
         pos++;
@@ -155,61 +155,93 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageArticle::UPDAT
 array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageArticle::INSERT()
 {
     array<System::Data::SqlClient::SqlCommand^>^ cmds;
+    System::Data::SqlClient::SqlCommand^ com;
+    System::Data::SqlClient::SqlCommand^ com1;
+
+    System::Data::SqlClient::SqlParameter^ param;
+    System::Data::SqlClient::SqlParameter^ param1;
+    System::Data::SqlClient::SqlParameter^ param2;
+
     int size = 1;
+    int pos;
     ColorStock^ tmp1 = gcnew ColorStock();
-    tmp1 = this->mStockColor;
-    while (tmp1 != nullptr)
-    {
-        tmp1 = tmp1->mNext;
-        size++;
-    }
-
-    cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(size);
-
-    //commande pour insérer un article
-    System::Data::SqlClient::SqlCommand^ com1 = gcnew System::Data::SqlClient::SqlCommand();
-    com1->CommandType = System::Data::CommandType::StoredProcedure;
-    com1->CommandText = "dbo.SP_Insert_Art";
-    com1->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 10)->Value = this->GetRefArticle();
-    com1->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 25)->Value = this->GetNameArticle();
-    com1->Parameters->Add("@designation", System::Data::SqlDbType::VarChar, 250)->Value = this->GetDesignation();
-    System::Data::SqlClient::SqlParameter^ param1 = gcnew System::Data::SqlClient::SqlParameter("@price", System::Data::SqlDbType::Decimal);
-    param1->Precision = 5;
-    param1->Scale = 2;
-    com1->Parameters->Add(param1)->Value = this->GetPriceUHT();
-    System::Data::SqlClient::SqlParameter^ param2 = gcnew System::Data::SqlClient::SqlParameter("@vat", System::Data::SqlDbType::Decimal);
-    param2->Precision = 3;
-    param2->Scale = 2;
-    com1->Parameters->Add(param2)->Value = this->GetTVA();
-    com1->Parameters->Add("@cat", System::Data::SqlDbType::Int)->Value = this->GetIdCategorie();
-    cmds[0] = com1;
-
-
-    //commande pour insérer les stocks de l'article
     ColorStock^ tmp2 = gcnew ColorStock();
-    tmp2 = this->mStockColor;
-    int pos = 1;
-    while (tmp2 != nullptr)
+    switch (this->GetChoice())
     {
-        System::Data::SqlClient::SqlCommand^ com = gcnew System::Data::SqlClient::SqlCommand();
-        com->CommandType = System::Data::CommandType::StoredProcedure;
-        com->CommandText = "dbo.SP_Update_Stock";
-        com->Parameters->Add("@threshold", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mReplenishmentThreshold;
-        System::Data::SqlClient::SqlParameter^ param = gcnew System::Data::SqlClient::SqlParameter("@cost", System::Data::SqlDbType::Decimal);
-        param->Precision = 15;
-        param->Scale = 2;
-        com->Parameters->Add(param)->Value = this->GetStockColor()->mProdCost;
-        com->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 50)->Value = this->GetStockColor()->mReferenceProductColor;
-        com->Parameters->Add("@qte", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mQuantityStock;
-        com->Parameters->Add("@color", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mIdColor;
-        com->Parameters->Add("@id_art", System::Data::SqlDbType::Int)->Value = this->GetStockColor()->mIdArt;
-        cmds[pos] = com;
-        tmp2 = tmp2->mNext;
-        pos++;
-    }
+    case 0:
+        cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(size);
 
+        //commande pour insérer un article
+        com1 = gcnew System::Data::SqlClient::SqlCommand();
+        com1->CommandType = System::Data::CommandType::StoredProcedure;
+        com1->CommandText = "dbo.SP_Insert_Art";
+        com1->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 10)->Value = this->GetRefArticle();
+        com1->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 25)->Value = this->GetNameArticle();
+        com1->Parameters->Add("@designation", System::Data::SqlDbType::VarChar, 250)->Value = this->GetDesignation();
+        param1 = gcnew System::Data::SqlClient::SqlParameter("@price", System::Data::SqlDbType::Decimal);
+        param1->Precision = 5;
+        param1->Scale = 2;
+        com1->Parameters->Add(param1)->Value = this->GetPriceUHT();
+        param2 = gcnew System::Data::SqlClient::SqlParameter("@vat", System::Data::SqlDbType::Decimal);
+        param2->Precision = 3;
+        param2->Scale = 2;
+        com1->Parameters->Add(param2)->Value = this->GetTVA();
+        com1->Parameters->Add("@cat", System::Data::SqlDbType::Int)->Value = this->GetIdCategorie();
+        cmds[0] = com1;
+        break;
+    case 1:
+        tmp1 = this->mStockColor;
+        while (tmp1 != nullptr)
+        {
+            tmp1 = tmp1->mNext;
+            size++;
+        }
+        cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(size - 1);
+
+        //commande pour insérer les stocks de l'article
+        
+        tmp2 = this->mStockColor;
+        pos = 0;
+        while (tmp2 != nullptr)
+        {
+            com = gcnew System::Data::SqlClient::SqlCommand();
+            com->CommandType = System::Data::CommandType::StoredProcedure;
+            com->CommandText = "dbo.SP_Insert_Stock";
+            com->Parameters->Add("@threshold", System::Data::SqlDbType::Int)->Value = tmp2->mReplenishmentThreshold;
+            param = gcnew System::Data::SqlClient::SqlParameter("@cost", System::Data::SqlDbType::Decimal);
+            param->Precision = 15;
+            param->Scale = 2;
+            com->Parameters->Add(param)->Value = tmp2->mProdCost;
+            com->Parameters->Add("@ref", System::Data::SqlDbType::VarChar, 50)->Value = tmp2->mReferenceProductColor;
+            com->Parameters->Add("@qte", System::Data::SqlDbType::Int)->Value = tmp2->mQuantityStock;
+            com->Parameters->Add("@color", System::Data::SqlDbType::Int)->Value = tmp2->mIdColor;
+            com->Parameters->Add("@id_art", System::Data::SqlDbType::Int)->Value = this->GetIdArt();
+            cmds[pos] = com;
+            tmp2 = tmp2->mNext;
+            pos++;
+        }
+        break;
+    default:
+        break;
+    }
 
     return cmds;
+}
+
+array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageArticle::CreateColor(String^ name)
+{
+    array<System::Data::SqlClient::SqlCommand^>^ cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
+    System::Data::SqlClient::SqlCommand^ com1 = gcnew System::Data::SqlClient::SqlCommand();
+    com1->CommandType = System::Data::CommandType::StoredProcedure;
+    com1->CommandText = "dbo.SP_Insert_Color";
+    com1->Parameters->Add("@name", System::Data::SqlDbType::VarChar, 15)->Value = name;
+    System::Data::SqlClient::SqlParameter^ param = gcnew System::Data::SqlClient::SqlParameter("@mul", System::Data::SqlDbType::Decimal);
+    param->Precision = 4;
+    param->Scale = 2;
+    com1->Parameters->Add(param)->Value = 1.0;
+    cmds[0] = com1;
+    return cmds;
+
 }
 
 void NS_Composant::MappageArticle::SetIdArt(int id)
@@ -249,18 +281,17 @@ void NS_Composant::MappageArticle::SetIdCategorie(int id)
 
 void NS_Composant::MappageArticle::SetStockColor(ColorStock^ stocks)
 {
-    ColorStock^ tmp = gcnew ColorStock();
-    tmp = this->mStockColor;
-    while (tmp != nullptr)
-    {
-        tmp = tmp->mNext;
-    }
-    tmp = stocks;
+    this->mStockColor = stocks;
 }
 
 void NS_Composant::MappageArticle::SetChoice(int choice)
 {
     this->choice = choice;
+}
+
+void NS_Composant::MappageArticle::SetCol(String^ _col)
+{
+    this->col = _col;
 }
 
 int NS_Composant::MappageArticle::GetIdArt()
@@ -306,5 +337,10 @@ NS_Composant::ColorStock^ NS_Composant::MappageArticle::GetStockColor()
 int NS_Composant::MappageArticle::GetChoice()
 {
     return this->choice;
+}
+
+String^ NS_Composant::MappageArticle::GetCol()
+{
+    return this->col;
 }
 

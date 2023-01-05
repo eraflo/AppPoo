@@ -59,6 +59,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageStaff::DELETE(
         com1->CommandType = System::Data::CommandType::StoredProcedure;
         com1->CommandText = "dbo.SP_Select_Ad_People";
         com1->Parameters->Add("@id_p", System::Data::SqlDbType::Int)->Value = this->GetId();
+        cmds[0] = com1;
         break;
     case 1:
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
@@ -68,6 +69,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageStaff::DELETE(
         com2->CommandType = System::Data::CommandType::StoredProcedure;
         com2->CommandText = "dbo.SP_Select_User";
         com2->Parameters->Add("@id_p", System::Data::SqlDbType::Int)->Value = this->GetId();
+        cmds[0] = com2;
         break;
     case 2:
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
@@ -90,7 +92,7 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageStaff::DELETE(
         cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
 
         //commande pour supprimer le compte du staff
-        cmds[1] = this->GetMapUser()->DELETE()[0];
+        cmds[0] = this->GetMapUser()->DELETE()[0];
         break;
     default:
         break;

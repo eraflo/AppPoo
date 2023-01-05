@@ -32,16 +32,15 @@ System::Data::DataSet^ NS_Service::ServiceCommande::DisplayAll(array<String^>^ d
 	return this->GetDataSet();
 }
 
-void NS_Service::ServiceCommande::Add(String^ del_date, String^ issue_date, double discount, String^ ref, array<NS_Composant::Basket^>^ panier, array<NS_Composant::Payment^>^ paiements)
+void NS_Service::ServiceCommande::Add(String^ del_date, String^ issue_date, double discount, String^ ref, int id_p, array<NS_Composant::Basket^>^ panier, array<NS_Composant::Payment^>^ paiements)
 {
-	int* id_adresse;
-
 	this->mMap->SetChoice(0);
 	this->mMap->SetDeliveryDate(del_date);
 	this->mMap->SetEmissionDate(issue_date);
 	this->mMap->SetCmdReference(ref);
 	this->mMap->SetCmdDiscount(discount);
-	id_adresse = this->GetCom()->ActionRowsId(this->mMap->INSERT());
+	this->mMap->SetIdCustomer(id_p);
+	array<int>^ id_o = this->GetCom()->ActionRowsId(this->mMap->INSERT());
 
 	this->mMap->SetChoice(1);
 	Basket^ panier_rempli = this->remplirPanier(panier);
@@ -49,6 +48,7 @@ void NS_Service::ServiceCommande::Add(String^ del_date, String^ issue_date, doub
 
 	this->mMap->SetBasket(panier_rempli);
 	this->mMap->SetPayment(paiement_renseigné);
+	this->mMap->SetIdCmd(id_o[0]);
 
 	this->GetCom()->ActionRows(this->mMap->INSERT());
 

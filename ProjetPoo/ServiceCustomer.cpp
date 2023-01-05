@@ -49,11 +49,11 @@ System::Data::DataSet^ NS_Service::ServiceCustomer::DisplayAddr(int _indexP, arr
 
 		if (this->GetDataSet()->Tables[dataTableName[0]]->Rows[i]->ItemArray[1]->ToString() == "deliver")
 		{
-			data_del = this->GetCom()->GetRows(this->mMap->GetMapAd()->SELECT(), tmp_del);
+			data_del->Merge(this->GetCom()->GetRows(this->mMap->GetMapAd()->SELECT(), tmp_del));
 		}
 		else if (this->GetDataSet()->Tables[dataTableName[0]]->Rows[i]->ItemArray[1]->ToString() == "bill")
 		{
-			data_bill = this->GetCom()->GetRows(this->mMap->GetMapAd()->SELECT(), tmp_bill);
+			data_bill->Merge(this->GetCom()->GetRows(this->mMap->GetMapAd()->SELECT(), tmp_bill));
 		}
 	}
 
@@ -63,25 +63,35 @@ System::Data::DataSet^ NS_Service::ServiceCustomer::DisplayAddr(int _indexP, arr
 	return this->GetDataSet();
 }
 
+System::Data::DataSet^ NS_Service::ServiceCustomer::GetCities(array<String^>^ dataTableName)
+{
+	this->GetDataSet()->Clear();
+	this->mODs = this->GetCom()->GetRows(this->mMap->GetMapAd()->GetCity(), dataTableName);
+	return this->mODs;
+}
+
 void NS_Service::ServiceCustomer::Delete(int id)
 {
-	int* id_ad = new int();
 	this->mMap->SetChoice(0);
 	this->mMap->SetId(id);
-	id_ad = this->GetCom()->ActionRowsId(this->mMap->DELETE());
+	array<String^>^ table_ad = gcnew array<String^>(1);
+	table_ad[0] = "ad";
+	System::Data::DataSet^ id_ad = this->GetCom()->GetRows(this->mMap->DELETE(), table_ad);
 
+	
 	this->mMap->SetChoice(1);
 	this->GetCom()->ActionRows(this->mMap->DELETE());
 
 	this->mMap->SetChoice(2);
 	int i = 0;
-	while (i < sizeof(id_ad))
+	int length = id_ad->Tables[table_ad[0]]->Rows->Count;
+	
+	while (i < length)
 	{
-		this->mMap->GetMapAd()->SetId(id_ad[i]);
+		this->mMap->GetMapAd()->SetId(Convert::ToInt32(id_ad->Tables[table_ad[0]]->Rows[i]->ItemArray[0]));
 		this->GetCom()->ActionRows(this->mMap->DELETE());
 		i++;
 	}
-
 }
 
 void NS_Service::ServiceCustomer::Edit(int id_cust, String^ fname, String^ lname, String^ email, String^ bdate)
@@ -107,40 +117,33 @@ void NS_Service::ServiceCustomer::EditAd(int id, int num, String^ comp, String^ 
 	this->GetCom()->ActionRows(this->mMap->GetMapAd()->UPDATE());
 }
 
-int* NS_Service::ServiceCustomer::Add(String^ fname, String^ lname, String^ email, String^ bdate)
+array<int>^ NS_Service::ServiceCustomer::Add(String^ fname, String^ lname, String^ email, String^ bdate)
 {
-	int* id_p;
-
 	this->mMap->SetChoice(0);
 	this->mMap->SetFirstName(fname);
 	this->mMap->SetLastName(lname);
 	this->mMap->SetEmail(email);
 	this->mMap->SetBirthDate(bdate);
-	id_p = this->GetCom()->ActionRowsId(this->mMap->INSERT());
+	array<int>^ id_p = this->GetCom()->ActionRowsId(this->mMap->INSERT());
 
 	this->mMap->SetChoice(1);
 
-	int i = 0;
-	while (i < sizeof(id_p))
-	{
-		this->mMap->SetId(id_p[i]);
-		this->GetCom()->ActionRows(this->mMap->INSERT());
-		i++;
-	}
-	return id_p;
+	this->mMap->SetId(id_p[0]);
+	this->GetCom()->ActionRows(this->mMap->INSERT());
 
+	return id_p;
 }
 
-int* NS_Service::ServiceCustomer::AddAddress(int num, String^ comp, String^ street, int pcode, int city)
+array<int>^ NS_Service::ServiceCustomer::AddAddress(int num, String^ comp, String^ street, int pcode, int city, int id_p, int type)
 {
-	int* id_ad = new int();
 	this->mMap->GetMapAd()->SetNum(num);
 	this->mMap->GetMapAd()->SetComp(comp);
 	this->mMap->GetMapAd()->SetStreet(street);
 	this->mMap->GetMapAd()->SetPostalCode(pcode);
 	this->mMap->GetMapAd()->SetIdCity(city);
+	this->SetType(type);
 
-	id_ad = this->GetCom()->ActionRowsId(this->mMap->GetMapAd()->INSERT());
+	array<int>^ id_ad = this->GetCom()->ActionRowsId(this->mMap->GetMapAd()->INSERT());
 
 	if (this->GetType() == 0)
 	{
@@ -151,15 +154,11 @@ int* NS_Service::ServiceCustomer::AddAddress(int num, String^ comp, String^ stre
 		this->mMap->SetChoice(3);
 	}
 
-	int i = 0;
-	while (i < sizeof(id_ad))
-	{
-		this->mMap->GetMapAd()->SetId(id_ad[i]);
-		this->GetCom()->ActionRows(this->mMap->INSERT());
-		i++;
-	}
+	this->mMap->SetId(id_p);
 
-
+	this->mMap->GetMapAd()->SetId(id_ad[0]);
+	this->GetCom()->ActionRows(this->mMap->INSERT());
+	
 	return id_ad;
 }
 

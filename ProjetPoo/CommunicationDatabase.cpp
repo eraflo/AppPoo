@@ -44,12 +44,12 @@ System::Data::DataSet^ NS_Composant::CommunicationDatabase::GetRows(array<System
 	return this->mODs;
 }
 
-int* NS_Composant::CommunicationDatabase::ActionRowsId(array<System::Data::SqlClient::SqlCommand^>^ com)
+array<int>^ NS_Composant::CommunicationDatabase::ActionRowsId(array<System::Data::SqlClient::SqlCommand^>^ com)
 {
-	int* id = new int();
+	int lenght = com->Length;
+	array<int>^ id = gcnew array<int>(lenght);
 
 	int i = 0;
-	int lenght = com->Length;
 	while (i < lenght)
 	{
 		this->mOCmd = com[i];

@@ -79,6 +79,19 @@ array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageAdresse::INSER
     return cmds;
 }
 
+array<System::Data::SqlClient::SqlCommand^>^ NS_Composant::MappageAdresse::GetCity()
+{
+    array<System::Data::SqlClient::SqlCommand^>^ cmds;
+    cmds = gcnew array<System::Data::SqlClient::SqlCommand^>(1);
+
+    //commande pour insérer une nouvelle adresse
+    System::Data::SqlClient::SqlCommand^ com = gcnew System::Data::SqlClient::SqlCommand();
+    com->CommandType = System::Data::CommandType::StoredProcedure;
+    com->CommandText = "dbo.SP_Select_All_City";
+    cmds[0] = com;
+    return cmds;
+}
+
 void NS_Composant::MappageAdresse::SetId(int _id)
 {
     this->mId = _id;

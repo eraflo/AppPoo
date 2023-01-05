@@ -18,7 +18,7 @@ namespace NS_Composant
 		CommunicationDatabase();
 		~CommunicationDatabase();
 		System::Data::DataSet^ GetRows(array<System::Data::SqlClient::SqlCommand^>^, array<String^>^);
-		int* ActionRowsId(array<System::Data::SqlClient::SqlCommand^>^);
+		array<int>^ ActionRowsId(array<System::Data::SqlClient::SqlCommand^>^);
 		void ActionRows(array<System::Data::SqlClient::SqlCommand^>^);
 	};
 }
