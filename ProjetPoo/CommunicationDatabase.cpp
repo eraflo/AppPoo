@@ -2,7 +2,7 @@
 
 NS_Composant::CommunicationDatabase::CommunicationDatabase()
 {
-	this->sCnx = "Data Source=MSI\\MSSQL_MFLORIAN;Initial Catalog=ProjetPOO;User ID=User_Project;Password=1234";
+	this->sCnx = "Data Source=.;Initial Catalog=ProjetPOO;Integrated Security=True;";
 	this->rSql = "RIEN";
 
 	this->mOCnx = gcnew System::Data::SqlClient::SqlConnection(this->sCnx);
